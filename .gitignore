@@ -1,129 +1,119 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
+#Edward Godinez 
+#CSE 1250
+#12.4.2022 
+#Final Project
+#This program lets the user enter products to be shipped and calculates
+#the subtotal, shipping and handling, and the total due.
+def user_greeting():
+    # User Greeting
+    print("This program lets the user enter products to be shipped and \n"
+"calculates the subtotal, tax, shipping and handling, and the total due.")
+    print()
+    
+def getState():
+    #Function that error checks and gets the state abbreviation for tax.
+    state_abbrev = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DE",
+                    "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS",
+                    "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", 
+                    "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM",
+                    "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", 
+                    "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI",
+                    "WV", "WY"]
+    print()
+    #Input line for the state abbreviation
+    state = input("Please enter the 2 letter abbreviation of the state " \
+"you are shipping to: ").upper()
+    #Error check the input for state.
+    while state not in state_abbrev:
+        state = input("ERROR - Please enter the 2 letter abbreviation of " \
+"the state you are shipping to: ").upper()
+    return state
+def getProductInfo():
+    #Function for getting the product information.
+    #Empty list for the product information.
+    productInfo = []
+    inputLoop = True
+    #While loop for the input.
+    while inputLoop:
+        #Input for Item Quantity.
+        itemQuantity = int(input("Enter quantity of item " \
+"(enter 0 if done): "))
+        if itemQuantity == 0:
+            inputLoop = False
+        else:
+            #Input line for Item Weight.
+            itemWeight = float(input("Enter the weight of one item in "\
+"lbs: "))
+            #Input line for item Price.
+            itemCost = float(input("Enter cost of one item in dollars "\
+"and cents: "))
+            print()
+            #Appending variables to product info list.
+            productInfo.append([itemQuantity, itemWeight, itemCost])
+    return productInfo
+def calculations(productInfoList):
+    #Function to do the calculations.
+    boxWeight = 0
+    subTotal = 0
+    for mainIndex in range(len(productInfoList)):
+        itemQuantity, itemWeight, itemCost = productInfoList[mainIndex]
+        boxWeight = boxWeight + (itemQuantity * itemWeight)
+        subTotal = subTotal + (itemQuantity * itemCost)
+    #Calculation for shipping
+    shippingCost = boxWeight * .25
+    #Assign the handling cost.
+    if boxWeight < 10:
+        handling = 1
+    elif boxWeight > 100:
+        handling = 5
+    else:
+        handling = 3
+    shippingHandling = shippingCost + handling
+    return subTotal, shippingHandling
+def runAgain():
+    # Function that asks the user to run the program again.
+    print()
+    yesNo = input("Would you like to fill another order? (y/n): ").lower()
+    # Error check.
+    while yesNo != 'y' and yesNo != 'n':
+        yesNo = input("Please enter 'y' or 'n': ").lower()
+    if yesNo == 'n':
+        run = False
+    else:
+        run = True
+    return run
+def exitMessage():
+    # Exit Message
+    print("Have a great day!")
+#------------------------ Main --------------------------
+#Call the user greeting function.
+user_greeting()
+#Variable to control the main program loop.
+runMain = True
+#Main program loop.
+while runMain == True:
+    #Call the getProductInfo function.
+    productInfoListMain = getProductInfo()
+    #Call the calculations function
+    subTotalMain, shippingHandling = calculations(productInfoListMain)
+    #Call the function for getting the state.
+    stateMain = getState()
+    #Calculate the tax if the state is California.
+    if stateMain == "CA":
+        tax = subTotalMain * .08
+    else:
+        tax = 0.00
+    #Calculate the total due.
+    totalDue = subTotalMain + shippingHandling + tax
+    print()
+    #Display and format the results.
+    print(format("Subtotal:", '<25'), format(subTotalMain, '>10,.2f'))
+    print(format('Tax:', '<25'), format(tax, '>10,.2f'))
+    print(format('Shipping and Handling:', '<25'), \
+        format(shippingHandling, '>10,.2f'))
+    print(format('Total Due:', '<25'), format(totalDue, '>10,.2f'))
+    #Ask the user if they want to run the program again.
+    runMain = runAgain()
+print()
+#Call exit message function
+exitMessage()
